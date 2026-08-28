@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="hangman.MainPage"
+             Title="Vader Hangman Game"
+             >
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Dark Side palette -->
+            <Color x:Key="VoidBlack">#0B0B0D</Color>
+            <Color x:Key="PanelBlack">#151517</Color>
+            <Color x:Key="SithRed">#B00020</Color>
+            <Color x:Key="SithRedBright">#FF1E3C</Color>
+            <Color x:Key="SteelGrey">#3A3A3E</Color>
+            <Color x:Key="LightGrey">#C9C9CE</Color>
+            <Color x:Key="ConsoleAmber">#FF7A1A</Color>
+
+            <!-- IMPLICIT style: no x:Key, applies to every Button automatically -->
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource PanelBlack}" />
+                <Setter Property="TextColor" Value="{StaticResource LightGrey}" />
+                <Setter Property="BorderColor" Value="{StaticResource SteelGrey}" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="WidthRequest" Value="42" />
+                <Setter Property="HeightRequest" Value="42" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!-- EXPLICIT style: has x:Key, must be referenced deliberately -->
+            <Style x:Key="ActionButtonStyle" TargetType="Button"
+                   >
+                <Setter Property="BackgroundColor" Value="{StaticResource SithRed}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="-1" />
+                <Setter Property="HeightRequest" Value="-1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="20,10" />
+            </Style>
+
+            <!-- EXPLICIT style: secondary action variant, based on ActionButtonStyle -->
+            <Style x:Key="SecondaryActionButtonStyle" TargetType="Button"
+                   BasedOn="{StaticResource ActionButtonStyle}">
+                <Setter Property="BackgroundColor" Value="{StaticResource SteelGrey}" />
+            </Style>
+
+            <!-- IMPLICIT style for Label -->
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource LightGrey}" />
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="20" RowSpacing="18">
+
+            <!-- Header -->
+            <VerticalStackLayout Grid.Row="0" Spacing="2" HorizontalOptions="Center">
+                <Label Text="THE DARK SIDE OF WORDS"
+                       TextColor="{StaticResource SithRedBright}"
+                       FontSize="14"
+                       CharacterSpacing="4"
+                       HorizontalOptions="Center" />
+                <Label Text="VADER HANGMAN"
+                       TextColor="White"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       CharacterSpacing="2"
+                       HorizontalOptions="Center" />
+                <BoxView HeightRequest="2" WidthRequest="180" Color="{StaticResource SithRed}" HorizontalOptions="Center" Margin="0,4,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- Helmet / gallows panel (static placeholder graphic area for now) -->
+            <Grid Grid.Row="1"
+                   BackgroundColor="{StaticResource PanelBlack}"
+                   
+                   Padding="10"
+                   HeightRequest="220"
+                   HorizontalOptions="Center"
+                   WidthRequest="260">
+                <Grid>
+                    <BoxView Color="{StaticResource VoidBlack}"
+                             HeightRequest="200"
+                             WidthRequest="240"
+                             CornerRadius="8" />
+                    <Image
+                          Source="darthvader.png"
+                        HeightRequest="200"
+                        WidthRequest="240"
+                        Aspect="AspectFit"
+                        />
+                    <Label Text="Lives: 6"
+                           TextColor="{StaticResource ConsoleAmber}"
+                           FontAttributes="Bold"
+                           FontSize="14"
+                           VerticalOptions="End"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,4"/>
+                </Grid>
+            </Grid>
+
+            <!-- Word display -->
+            <Label Grid.Row="2"
+                   Text="_ _ _ _ _"
+                   TextColor="White"
+                   FontSize="34"
+                   FontAttributes="Bold"
+                   CharacterSpacing="10"
+                   HorizontalOptions="Center" />
+
+            <!-- Status message -->
+            <Label Grid.Row="3"
+                   Text="Guess the word before the breath runs out."
+                   FontSize="14"
+                   FontAttributes="Italic"
+                   HorizontalOptions="Center" />
+
+            <!-- Letter buttons A-Z (visual only, no Clicked handlers yet) -->
+            <FlexLayout Grid.Row="4"
+                        Wrap="Wrap"
+                        JustifyContent="Center"
+                        Direction="Row"
+                        HorizontalOptions="Center">
+                <Button Text="A" Margin="3"/>
+                <Button Text="B" Margin="3"/>
+                <Button Text="C" Margin="3"/>
+                <Button Text="D" Margin="3"/>
+                <Button Text="E" Margin="3"/>
+                <Button Text="F" Margin="3"/>
+                <Button Text="G" Margin="3"/>
+                <Button Text="H" Margin="3"/>
+                <Button Text="I" Margin="3"/>
+                <Button Text="J" Margin="3"/>
+                <Button Text="K" Margin="3"/>
+                <Button Text="L" Margin="3"/>
+                <Button Text="M" Margin="3"/>
+                <Button Text="N" Margin="3"/>
+                <Button Text="O" Margin="3"/>
+                <Button Text="P" Margin="3"/>
+                <Button Text="Q" Margin="3"/>
+                <Button Text="R" Margin="3"/>
+                <Button Text="S" Margin="3"/>
+                <Button Text="T" Margin="3"/>
+                <Button Text="U" Margin="3"/>
+                <Button Text="V" Margin="3"/>
+                <Button Text="W" Margin="3"/>
+                <Button Text="X" Margin="3"/>
+                <Button Text="Y" Margin="3"/>
+                <Button Text="Z" Margin="3"/>
+            </FlexLayout>
+
+            <!-- Action row (visual only, no Clicked handlers yet) -->
+            <HorizontalStackLayout Grid.Row="5" Spacing="16" HorizontalOptions="Center">
+                <Button Text="New Game" Style="{StaticResource ActionButtonStyle}"/>
+                <Button Text="Hint" Style="{StaticResource SecondaryActionButtonStyle}"/>
+            </HorizontalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>
