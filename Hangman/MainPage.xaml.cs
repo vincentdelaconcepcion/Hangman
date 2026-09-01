@@ -4,201 +4,208 @@ namespace Hangman
 {
     public partial class MainPage : ContentPage
     {
+        private readonly List<string> words = new List<string>()
+        {
+            "python", "javascript", "maui", "csharp", "mongodb",
+            "sql", "xaml", "word", "excel", "powerpoint",
+            "code", "hotreload", "snippets", "android", "vader"
+        };
 
+        private readonly List<Button> letterButtons = new List<Button>();
+
+        private string answer = "";
+        private readonly List<char> guessed = new List<char>();
+        private int mistakes = 0;
+        private int maxWrong = 6;
 
         public MainPage()
         {
             InitializeComponent();
-            Letters.AddRange("abcdefghijklmnopqrstuvwxyz");
-            BindingContext = this;
-            PickWord();
-            CalculateWord(answer, guessed);
+            CollectLetterButtons();
+            ResetGame();
         }
 
-        #region UI Properties
-        public string Spotlight
+        private void CollectLetterButtons()
         {
-            get => spotlight;
-            set
+            letterButtons.Clear();
+            foreach (char c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
             {
-                spotlight = value;
-                OnPropertyChanged();
+                var btn = this.FindByName<Button>($"Btn{c}");
+                if (btn != null)
+                {
+                    letterButtons.Add(btn);
+                }
             }
         }
 
-        public List<char> Letters
+        private void ResetGame()
         {
-            get => letters;
-            set
-            {
-                letters = value;
-                OnPropertyChanged();
-            }
+            mistakes = 0;
+            guessed.Clear();
+            answer = PickWord();
+
+            UpdateWordDisplay();
+            UpdateStatus();
+
+            GameMessage.Text = "Choose a letter. The Dark Lord is watching.";
+            GameMessage.TextColor = Color.FromArgb("#999EA8");
+            StatusText.Text = "READY";
+            StatusText.TextColor = Color.FromArgb("#FF3A42");
+            StatusBadge.BackgroundColor = Color.FromArgb("#211015");
+            StatusBadge.Stroke = Color.FromArgb("#57171B");
+            VaderStatus.Text = "DARTH VADER";
+
+            EnableLetters();
+            UpdateVaderState();
         }
 
-        public string Message
+        private string PickWord()
         {
-            get => message;
-            set
-            {
-                message = value;
-                OnPropertyChanged();
-            }
+            return words[new Random().Next(0, words.Count)];
         }
 
-        public string GameStatus
-        {
-            get => gameStatus;
-            set
-            {
-                gameStatus = value;
-                OnPropertyChanged();
-            }
-        }
-        public string CurrentImage
-        {
-            get => currentImage;
-            set
-            {
-                currentImage = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region Fields
-        List<string> words = new List<string>()
-            {
-                "python",
-                "javascript",
-                "maui",
-                "csharp",
-                "mongodb",
-                "sql",
-                "xaml",
-                "word",
-                "excel",
-                "powerpoint",
-                "code",
-                "hotreload",
-                "snippets"
-            };
-
-        string answer = "";
-        private string spotlight = String.Empty;
-        List<char> guessed = new List<char>();
-        private List<char> letters = new List<char>();
-        private string message = String.Empty;
-        int mistakes = 0;
-        int maxWrong = 6;
-        private string gameStatus = String.Empty;
-        private string currentImage = "dotnet_bot.png";
-        #endregion
-
-        #region Game Engine
-        private void PickWord()
-        {
-            answer = words[new Random().Next(0, words.Count)];
-        }
-
-        private void CalculateWord(string answer, List<char> guessed)
+        private void UpdateWordDisplay()
         {
             var temp =
-                answer.Select(x => (guessed.IndexOf(x) >= 0 ? x : '_'))
+                answer.Select(x => guessed.IndexOf(x) >= 0 ? x : '_')
                 .ToArray();
-            Spotlight = string.Join(' ', temp);
+
+            WordLabel.Text = string.Join(" ", temp);
+            WordLabel.CharacterSpacing = 8;
+
+            int correctCount = answer.Count(c => guessed.IndexOf(c) >= 0);
+            double progress = answer.Length == 0 ? 0 : (double)correctCount / answer.Length;
+            WordProgress.Progress = progress;
+            ProgressText.Text = $"{Math.Round(progress * 100)}%";
+        }
+
+        private void UpdateStatus()
+        {
+            int remaining = maxWrong - mistakes;
+            WrongCounter.Text = $"{mistakes} / {maxWrong}";
+            MistakeText.Text = $"{remaining} MISTAKES LEFT";
+            MistakeBar.Progress = (double)mistakes / maxWrong;
+        }
+
+        private void UpdateVaderState()
+        {
+            int revealed = answer.Count(c => guessed.IndexOf(c) >= 0);
+            double progress = answer.Length == 0 ? 0 : (double)revealed / answer.Length;
+
+            if (revealed == answer.Length && answer.Length > 0)
+            {
+                VaderImage.Source = "vaderlogo.png";
+            }
+            else if (mistakes >= maxWrong)
+            {
+                VaderImage.Source = "defeat.png";
+            }
+            else if (mistakes >= 3)
+            {
+                VaderImage.Source = "choke.png";
+            }
+            else if (progress >= 0.40 && progress <= 0.50)
+            {
+                VaderImage.Source = "injured.png";
+            }
+            else
+            {
+                VaderImage.Source = "ready.png";
+            }
         }
 
         private void HandleGuess(char letter)
         {
-            if (guessed.IndexOf(letter) == -1)
+            if (guessed.IndexOf(letter) >= 0)
             {
-                guessed.Add(letter);
+                return;
             }
-            if (answer.IndexOf(letter) >= 0)
-            {
-                CalculateWord(answer, guessed);
-                CheckIfGameWon();
-            }
-            else if (answer.IndexOf(letter) == -1)
+
+            guessed.Add(letter);
+
+            if (answer.IndexOf(letter) < 0)
             {
                 mistakes++;
-                UpdateStatus();
-                CheckIfGameLost();
-                CurrentImage = "dotnet_bot.png";
+                GameMessage.Text = $"'{char.ToUpper(letter)}' is not in the transmission.";
+                GameMessage.TextColor = Color.FromArgb("#A7ABB3");
             }
+
+            UpdateStatus();
+            UpdateWordDisplay();
+            UpdateVaderState();
+
+            if (CheckIfGameWon())
+            {
+                return;
+            }
+
+            CheckIfGameLost();
         }
 
-        private void CheckIfGameLost()
+        private bool CheckIfGameWon()
         {
-            if (mistakes == maxWrong)
+            if (string.Join("", WordLabel.Text.Split(' ')) == answer)
             {
-                Message = "You Lost!!";
+                GameMessage.Text = "The transmission is decoded. You win!";
+                GameMessage.TextColor = Color.FromArgb("#FFD34D");
+                StatusText.Text = "VICTORY";
+                StatusText.TextColor = Color.FromArgb("#4DFF8A");
+                StatusBadge.BackgroundColor = Color.FromArgb("#10221A");
+                StatusBadge.Stroke = Color.FromArgb("#2D6B46");
+                VaderStatus.Text = "VADER IS DEFEATED";
+                UpdateVaderState();
                 DisableLetters();
+                return true;
             }
+            return false;
+        }
+
+        private bool CheckIfGameLost()
+        {
+            if (mistakes >= maxWrong)
+            {
+                GameMessage.Text = $"You lost! The word was \"{answer.ToUpper()}\".";
+                GameMessage.TextColor = Color.FromArgb("#FF3A42");
+                StatusText.Text = "DEFEATED";
+                StatusText.TextColor = Color.FromArgb("#FF3A42");
+                StatusBadge.BackgroundColor = Color.FromArgb("#211015");
+                StatusBadge.Stroke = Color.FromArgb("#57171B");
+                VaderStatus.Text = "VADER HAS WON";
+                UpdateVaderState();
+                DisableLetters();
+                return true;
+            }
+            return false;
         }
 
         private void DisableLetters()
         {
-            foreach (var children in LettersContainer.Children)
+            foreach (var btn in letterButtons)
             {
-                var btn = children as Button;
-                if (btn != null)
-                {
-                    btn.IsEnabled = false;
-                }
+                btn.IsEnabled = false;
             }
         }
 
         private void EnableLetters()
         {
-            foreach (var children in LettersContainer.Children)
+            foreach (var btn in letterButtons)
             {
-                var btn = children as Button;
-                if (btn != null)
-                {
-                    btn.IsEnabled = true;
-                }
+                btn.IsEnabled = true;
             }
         }
 
-        private void CheckIfGameWon()
+        private void LetterButton_Clicked(object sender, EventArgs e)
         {
-            if (Spotlight.Replace(" ", "") == answer)
+            if (sender is Button btn && btn.Text.Length > 0)
             {
-                Message = "You win!";
-                DisableLetters();
-            }
-        }
-
-        private void UpdateStatus()
-        {
-            GameStatus = $"Errors: {mistakes} of {maxWrong}";
-        }
-
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-            var btn = sender as Button;
-            if (btn != null)
-            {
-                var letter = btn.Text;
                 btn.IsEnabled = false;
-                HandleGuess(letter[0]);
+                HandleGuess(char.ToLower(btn.Text[0]));
             }
         }
 
-        private void Reset_Clicked(object sender, EventArgs e)
+        private void ResetButton_Clicked(object sender, EventArgs e)
         {
-            mistakes = 0;
-            guessed = new List<char>();
-            CurrentImage = "dotnet_bot.png";
-            PickWord();
-            CalculateWord(answer, guessed);
-            Message = "";
-            UpdateStatus();
-            EnableLetters();
+            ResetGame();
         }
-        #endregion
     }
-    
 }

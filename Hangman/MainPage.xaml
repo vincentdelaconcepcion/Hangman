@@ -2,55 +2,651 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hangman.MainPage"
+             BackgroundColor="#08090C"
+                NavigationPage.HasNavigationBar="False"
              Title="Hangman">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,20"
-            Spacing="20">
+    <ContentPage.Resources>
 
-            <Image
-                Source="{Binding CurrentImage}"
-                HeightRequest="185"
-                Aspect="AspectFit" />
+            <!-- ========================= -->
+            <!-- COLORS -->
+            <!-- ========================= -->
 
-            <Label
-                Text="{Binding Spotlight}"
-                Style="{StaticResource Headline}"
-                HorizontalOptions="Center" />
+            <Color x:Key="ImperialBlack">#08090C</Color>
+            <Color x:Key="PanelBlack">#101217</Color>
+            <Color x:Key="PanelLight">#171A20</Color>
 
-            <Label
-                Text="{Binding Message}"
-                HorizontalOptions="Center" />
+            <Color x:Key="ImperialRed">#D71920</Color>
+            <Color x:Key="DarkRed">#7A0B10</Color>
 
-            <Label
-                Text="{Binding GameStatus}"
-                Style="{StaticResource SubHeadline}"
-                HorizontalOptions="Center" />
+            <Color x:Key="SaberRed">#FF2028</Color>
 
-            <FlexLayout
-                x:Name="LettersContainer"
-                Wrap="Wrap"
-                JustifyContent="Center"
-                AlignItems="Center"
-                BindableLayout.ItemsSource="{Binding Letters}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            Text="{Binding}"
-                            Clicked="Button_Clicked"
-                            Margin="2"
-                            WidthRequest="40"
-                            HeightRequest="40" />
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </FlexLayout>
+            <Color x:Key="ForcePurple">#8A4DFF</Color>
+            <Color x:Key="ForcePurpleDark">#3A176E</Color>
 
-            <Button
-                Text="Reset"
-                Clicked="Reset_Clicked"
-                HorizontalOptions="Center" />
-        </VerticalStackLayout>
-    </ScrollView>
+            <Color x:Key="TextWhite">#F4F4F4</Color>
+            <Color x:Key="TextGray">#8E929B</Color>
+
+            <Color x:Key="BorderGray">#292D35</Color>
+
+            <!-- ========================= -->
+            <!-- BUTTON STYLE -->
+            <!-- ========================= -->
+
+            <Style x:Key="LetterButtonStyle"
+               TargetType="Button">
+
+                <Setter Property="BackgroundColor"
+                    Value="#171A20" />
+
+                <Setter Property="TextColor"
+                    Value="#F4F4F4" />
+
+                <Setter Property="FontSize"
+                    Value="16" />
+
+                <Setter Property="FontAttributes"
+                    Value="Bold" />
+
+                <Setter Property="CornerRadius"
+                    Value="8" />
+
+                <Setter Property="HeightRequest"
+                    Value="48" />
+
+                <Setter Property="WidthRequest"
+                    Value="48" />
+
+                <Setter Property="BorderColor"
+                    Value="#30343D" />
+
+                <Setter Property="BorderWidth"
+                    Value="1" />
+
+                <Setter Property="Padding"
+                    Value="0" />
+
+            </Style>
+
+        </ContentPage.Resources>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN SCREEN -->
+        <!-- ================================================= -->
+
+        <Grid RowDefinitions="Auto,*,Auto"
+          Padding="16,10,16,14">
+
+
+            <!-- ================================================= -->
+            <!-- TOP BAR -->
+            <!-- ================================================= -->
+
+            <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,*,Auto"
+              HeightRequest="55">
+
+                <!-- Vader symbol -->
+                <Frame
+                Grid.Column="0"
+                WidthRequest="40"
+                HeightRequest="40"
+                CornerRadius="20"
+                Padding="0"
+                BackgroundColor="#171A20"
+                BorderColor="#353941"
+                HasShadow="False">
+
+                <Image
+                    Source="vaderlogo.png"
+                    />
+
+            </Frame>
+
+
+                <!-- Title -->
+
+                <VerticalStackLayout
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                VerticalOptions="Center"
+                Spacing="0">
+
+                    <Label
+                    Text="THE DARK SIDE"
+                    TextColor="Red"
+                    FontSize="10"
+                    FontAttributes="Bold"
+                    CharacterSpacing="2" />
+
+                    <Label
+                    Text="DARTH VADER HANGMAN GAME"
+                    TextColor="#FFFFFF"
+                    FontSize="19"
+                    FontAttributes="Bold"
+                    CharacterSpacing="1" />
+
+                </VerticalStackLayout>
+
+
+                <!-- Wrong counter -->
+
+                <Border
+                Grid.Column="2"
+                Stroke="#3A1B1E"
+                StrokeThickness="1"
+                BackgroundColor="#140D0F"
+                StrokeShape="RoundRectangle 8"
+                Padding="10,5">
+
+                    <HorizontalStackLayout
+                    Spacing="5">
+
+                        <Label
+                        Text="☠"
+                        TextColor="#D71920"
+                        FontSize="14" />
+
+                        <Label
+                        x:Name="WrongCounter"
+                        Text="0 / 6"
+                        TextColor="#F1F1F1"
+                        FontAttributes="Bold"
+                        FontSize="13" />
+
+                    </HorizontalStackLayout>
+
+                </Border>
+
+            </Grid>
+
+
+            <!-- ================================================= -->
+            <!-- CENTER GAME AREA -->
+            <!-- ================================================= -->
+
+            <ScrollView
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Never">
+
+                <VerticalStackLayout
+                Spacing="14"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start">
+
+
+                    <!-- ========================================= -->
+                    <!-- VADER STATUS -->
+                    <!-- ========================================= -->
+
+                    <Border
+                    x:Name="VaderCard"
+                    BackgroundColor="#0F1116"
+                    Stroke="#292D35"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="12"
+                    Margin="0,5,0,0">
+
+                        <Grid
+                        RowDefinitions="Auto,*,Auto"
+                        HeightRequest="280">
+
+
+                            <!-- Vader status -->
+
+                            <Grid
+                            Grid.Row="0"
+                            ColumnDefinitions="*,Auto">
+
+                                <VerticalStackLayout
+                                Spacing="1">
+
+                                    <Label
+                                    Text="OPPONENT"
+                                    TextColor="#686D76"
+                                    FontSize="9"
+                                    FontAttributes="Bold"
+                                    CharacterSpacing="2" />
+
+                                    <Label
+                                    x:Name="VaderStatus"
+                                    Text="DARTH VADER"
+                                    TextColor="#FFFFFF"
+                                    FontSize="15"
+                                    FontAttributes="Bold" />
+
+                                </VerticalStackLayout>
+
+
+                                <Border
+                                Grid.Column="1"
+                                x:Name="StatusBadge"
+                                BackgroundColor="#211015"
+                                Stroke="#57171B"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 6"
+                                Padding="8,4">
+
+                                    <Label
+                                    x:Name="StatusText"
+                                    Text="READY"
+                                    TextColor="#FF3A42"
+                                    FontSize="9"
+                                    FontAttributes="Bold" />
+
+                                </Border>
+
+                            </Grid>
+
+
+                            <!-- ================================= -->
+                            <!-- VADER IMAGE -->
+                            <!-- ================================= -->
+
+                            <Grid
+                            Grid.Row="1"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
+
+                                <!-- Purple Force glow -->
+
+                                <Ellipse
+                                WidthRequest="210"
+                                HeightRequest="80"
+                                Fill="#24113D"
+                                Opacity="0.65"
+                                HorizontalOptions="Center"
+                                VerticalOptions="End"
+                                Margin="0,0,0,10" />
+
+                                <Image
+                                x:Name="VaderImage"
+                                Source="ready.png"
+                                Aspect="AspectFit"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                WidthRequest="250"
+                                HeightRequest="215" />
+
+                            </Grid>
+
+
+                            <!-- ================================= -->
+                            <!-- HEALTH / MISTAKE BAR -->
+                            <!-- ================================= -->
+
+                            <VerticalStackLayout
+                            Grid.Row="2"
+                            Spacing="5">
+
+                                <Grid
+                                ColumnDefinitions="*,Auto">
+
+                                    <Label
+                                    Text="VADER'S PATIENCE"
+                                    TextColor="#6D717A"
+                                    FontSize="8"
+                                    FontAttributes="Bold" />
+
+                                    <Label
+                                    x:Name="MistakeText"
+                                    Grid.Column="1"
+                                    Text="6 MISTAKES LEFT"
+                                    TextColor="#A7ABB3"
+                                    FontSize="8"
+                                    FontAttributes="Bold" />
+
+                                </Grid>
+
+
+                                <ProgressBar
+                                x:Name="MistakeBar"
+                                Progress="0"
+                                ProgressColor="#D71920"
+                                BackgroundColor="#272A30"
+                                HeightRequest="6" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </Border>
+
+
+                    <!-- ========================================= -->
+                    <!-- WORD AREA -->
+                    <!-- ========================================= -->
+
+                    <Border
+                    BackgroundColor="#0F1116"
+                    Stroke="#292D35"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="18,15">
+
+                        <VerticalStackLayout
+                        Spacing="10">
+
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <Label
+                                Text="DECODE THE TRANSMISSION"
+                                TextColor="#696E77"
+                                FontSize="9"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5" />
+
+                                <Label
+                                x:Name="ProgressText"
+                                Grid.Column="1"
+                                Text="0%"
+                                TextColor="#9D6CFF"
+                                FontSize="10"
+                                FontAttributes="Bold" />
+
+                            </Grid>
+
+
+                            <!-- WORD -->
+
+                            <Label
+                            x:Name="WordLabel"
+                            Text="_ _ _ _"
+                            TextColor="#FFFFFF"
+                            FontSize="27"
+                            FontAttributes="Bold"
+                            CharacterSpacing="8"
+                            HorizontalTextAlignment="Center"
+                            Margin="0,3,0,3" />
+
+
+                            <!-- Progress -->
+
+                            <ProgressBar
+                            x:Name="WordProgress"
+                            Progress="0"
+                            ProgressColor="#8A4DFF"
+                            BackgroundColor="#24262D"
+                            HeightRequest="5" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+
+                    <!-- ========================================= -->
+                    <!-- MESSAGE -->
+                    <!-- ========================================= -->
+
+                    <Border
+                    x:Name="MessageCard"
+                    BackgroundColor="#0F1116"
+                    Stroke="#292D35"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12">
+
+                        <Label
+                        x:Name="GameMessage"
+                        Text="Choose a letter. The Dark Lord is watching."
+                        TextColor="#999EA8"
+                        FontSize="11"
+                        HorizontalTextAlignment="Center" />
+
+                    </Border>
+
+
+                    <!-- ========================================= -->
+                    <!-- KEYBOARD -->
+                    <!-- ========================================= -->
+
+                    <Border
+                    BackgroundColor="#0B0D11"
+                    Stroke="#20232A"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="12,14">
+
+                        <VerticalStackLayout
+                        Spacing="8">
+
+                            <!-- ROW 1 -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="7">
+
+                                <Button Text="A"
+                                    x:Name="BtnA"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="B"
+                                    x:Name="BtnB"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="C"
+                                    x:Name="BtnC"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="D"
+                                    x:Name="BtnD"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="E"
+                                    x:Name="BtnE"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+
+                            <!-- ROW 2 -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="7">
+
+                                <Button Text="F"
+                                    x:Name="BtnF"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="G"
+                                    x:Name="BtnG"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="H"
+                                    x:Name="BtnH"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="I"
+                                    x:Name="BtnI"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="J"
+                                    x:Name="BtnJ"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+
+                            <!-- ROW 3 -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="7">
+
+                                <Button Text="K"
+                                    x:Name="BtnK"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="L"
+                                    x:Name="BtnL"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="M"
+                                    x:Name="BtnM"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="N"
+                                    x:Name="BtnN"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="O"
+                                    x:Name="BtnO"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+
+                            <!-- ROW 4 -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="7">
+
+                                <Button Text="P"
+                                    x:Name="BtnP"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="Q"
+                                    x:Name="BtnQ"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="R"
+                                    x:Name="BtnR"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="S"
+                                    x:Name="BtnS"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="T"
+                                    x:Name="BtnT"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+
+                            <!-- ROW 5 -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="7">
+
+                                <Button Text="U"
+                                    x:Name="BtnU"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="V"
+                                    x:Name="BtnV"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="W"
+                                    x:Name="BtnW"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="X"
+                                    x:Name="BtnX"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                                <Button Text="Y"
+                                    x:Name="BtnY"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+
+                            <!-- Z -->
+
+                            <HorizontalStackLayout
+                            HorizontalOptions="Center">
+
+                                <Button Text="Z"
+                                    x:Name="BtnZ"
+                                    Style="{StaticResource LetterButtonStyle}"
+                                    Clicked="LetterButton_Clicked" />
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+
+                    <!-- ========================================= -->
+                    <!-- RESET -->
+                    <!-- ========================================= -->
+
+                    <Button
+                    x:Name="ResetButton"
+                    Text="RESET GAME"
+                    Clicked="ResetButton_Clicked"
+                    BackgroundColor="#171A20"
+                    TextColor="#FFFFFF"
+                    BorderColor="#383C45"
+                    BorderWidth="1"
+                    CornerRadius="9"
+                    HeightRequest="48"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    Margin="55,0,55,10" />
+
+                </VerticalStackLayout>
+
+            </ScrollView>
+
+
+            <!-- ================================================= -->
+            <!-- BOTTOM STATUS -->
+            <!-- ================================================= -->
+
+            <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,Auto">
+
+                <Label
+                Text="GALACTIC EMPIRE • CLASSIFIED"
+                TextColor="#41454D"
+                FontSize="8"
+                CharacterSpacing="1" />
+
+                <Label
+                Grid.Column="1"
+                Text="FORCE LEVEL: MAX"
+                TextColor="#5D367E"
+                FontSize="8"
+                FontAttributes="Bold" />
+
+            </Grid>
+
+        </Grid>
+
+    
 
 </ContentPage>
