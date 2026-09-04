@@ -82,7 +82,7 @@
             <!-- ================================================= -->
             <!-- TOP BAR -->
             <!-- ================================================= -->
-
+        
             <Grid Grid.Row="0"
               ColumnDefinitions="Auto,*,Auto"
               HeightRequest="55">
@@ -160,7 +160,8 @@
                 </Border>
 
             </Grid>
-
+            
+        
 
             <!-- ================================================= -->
             <!-- CENTER GAME AREA -->
@@ -179,7 +180,9 @@
                     <!-- ========================================= -->
                     <!-- VADER STATUS -->
                     <!-- ========================================= -->
-
+                <Grid ColumnDefinitions="*,*"
+                ColumnSpacing="10">
+                    
                     <Border
                     x:Name="VaderCard"
                     BackgroundColor="#0F1116"
@@ -187,7 +190,9 @@
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 16"
                     Padding="12"
-                    Margin="0,5,0,0">
+                    Margin="0,5,0,0"
+                    
+                        >
 
                         <Grid
                         RowDefinitions="Auto,*,Auto"
@@ -239,8 +244,7 @@
                                 </Border>
 
                             </Grid>
-
-
+                        
                             <!-- ================================= -->
                             <!-- VADER IMAGE -->
                             <!-- ================================= -->
@@ -314,6 +318,67 @@
 
                     </Border>
 
+                    <!-- HINT AREA (beside Vader) -->
+                    <Border
+                    Grid.Column="1"
+                    BackgroundColor="#0F1116"
+                    Stroke="#292D35"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="18,15"
+                    Margin="0,5,0,0">
+
+                        <VerticalStackLayout
+                        Spacing="10">
+
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <Label
+                                Text="FORCE INTEL"
+                                TextColor="#696E77"
+                                FontSize="9"
+                                FontAttributes="Bold"
+                                CharacterSpacing="1.5" />
+
+                                <Label
+                                x:Name="HintCountText"
+                                Grid.Column="1"
+                                Text="0 / 3"
+                                TextColor="#4DFF8A"
+                                FontSize="10"
+                                FontAttributes="Bold" />
+
+                            </Grid>
+
+                            <Label
+                            x:Name="HintTitle"
+                            Text="NO HINTS USED"
+                            TextColor="#5D367E"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            Margin="0,3,0,3" />
+
+                            <Label
+                            x:Name="HintText"
+                            Text="Use a hint to reveal intel about the word."
+                            TextColor="#696E77"
+                            FontSize="11"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap" />
+
+                            <ProgressBar
+                            x:Name="HintProgress"
+                            Progress="0"
+                            ProgressColor="#5D367E"
+                            BackgroundColor="#24262D"
+                            HeightRequest="5" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </Grid>
 
                     <!-- ========================================= -->
                     <!-- WORD AREA -->
@@ -348,9 +413,6 @@
 
                             </Grid>
 
-
-                            <!-- WORD -->
-
                             <Label
                             x:Name="WordLabel"
                             Text="_ _ _ _"
@@ -360,9 +422,6 @@
                             CharacterSpacing="8"
                             HorizontalTextAlignment="Center"
                             Margin="0,3,0,3" />
-
-
-                            <!-- Progress -->
 
                             <ProgressBar
                             x:Name="WordProgress"
@@ -603,19 +662,38 @@
                     <!-- RESET -->
                     <!-- ========================================= -->
 
-                    <Button
-                    x:Name="ResetButton"
-                    Text="RESET GAME"
-                    Clicked="ResetButton_Clicked"
-                    BackgroundColor="#171A20"
-                    TextColor="#FFFFFF"
-                    BorderColor="#383C45"
-                    BorderWidth="1"
-                    CornerRadius="9"
-                    HeightRequest="48"
-                    FontSize="12"
-                    FontAttributes="Bold"
-                    Margin="55,0,55,10" />
+                    <Grid
+                    ColumnDefinitions="*,8,*"
+                    Margin="40,0,40,10">
+
+                        <Button
+                        x:Name="HintButton"
+                        Text="FORCE HINT"
+                        Clicked="HintButton_Clicked"
+                        BackgroundColor="#1A1230"
+                        TextColor="#8A4DFF"
+                        BorderColor="#3A176E"
+                        BorderWidth="1"
+                        CornerRadius="9"
+                        HeightRequest="48"
+                        FontSize="11"
+                        FontAttributes="Bold" />
+
+                        <Button
+                        x:Name="ResetButton"
+                        Grid.Column="2"
+                        Text="RESET GAME"
+                        Clicked="ResetButton_Clicked"
+                        BackgroundColor="#171A20"
+                        TextColor="#FFFFFF"
+                        BorderColor="#383C45"
+                        BorderWidth="1"
+                        CornerRadius="9"
+                        HeightRequest="48"
+                        FontSize="11"
+                        FontAttributes="Bold" />
+
+                    </Grid>
 
                 </VerticalStackLayout>
 

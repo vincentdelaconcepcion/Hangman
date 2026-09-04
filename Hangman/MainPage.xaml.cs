@@ -11,12 +11,33 @@ namespace Hangman
             "code", "hotreload", "snippets", "android", "vader"
         };
 
+        private readonly Dictionary<string, string> wordCategories = new()
+        {
+            ["python"] = "Programming Language",
+            ["javascript"] = "Programming Language",
+            ["maui"] = "UI Framework",
+            ["csharp"] = "Programming Language",
+            ["mongodb"] = "Database",
+            ["sql"] = "Query Language",
+            ["xaml"] = "UI Markup",
+            ["word"] = "Office App",
+            ["excel"] = "Office App",
+            ["powerpoint"] = "Office App",
+            ["code"] = "General Term",
+            ["hotreload"] = "Developer Tool",
+            ["snippets"] = "Developer Tool",
+            ["android"] = "Operating System",
+            ["vader"] = "Sith Lord"
+        };
+
         private readonly List<Button> letterButtons = new List<Button>();
 
         private string answer = "";
         private readonly List<char> guessed = new List<char>();
         private int mistakes = 0;
         private int maxWrong = 6;
+        private int hintsUsed = 0;
+        private const int maxHints = 3;
 
         public MainPage()
         {
@@ -57,6 +78,7 @@ namespace Hangman
 
             EnableLetters();
             UpdateVaderState();
+            ResetHints();
         }
 
         private string PickWord()
@@ -87,6 +109,78 @@ namespace Hangman
             MistakeBar.Progress = (double)mistakes / maxWrong;
         }
 
+        private void ResetHints()
+        {
+            hintsUsed = 0;
+            HintCountText.Text = "0 / 3";
+            HintProgress.Progress = 0;
+            HintTitle.Text = "NO HINTS USED";
+            HintTitle.TextColor = Color.FromArgb("#5D367E");
+            HintText.Text = "Use a hint to reveal intel about the word.";
+            HintText.TextColor = Color.FromArgb("#696E77");
+            HintButton.IsEnabled = true;
+        }
+
+        private void GiveHint()
+        {
+            if (hintsUsed >= maxHints || string.IsNullOrEmpty(answer))
+            {
+                return;
+            }
+
+            hintsUsed++;
+            int remaining = maxHints - hintsUsed;
+            HintCountText.Text = $"{hintsUsed} / 3";
+            HintProgress.Progress = (double)hintsUsed / maxHints;
+
+            if (hintsUsed == 1)
+            {
+                string category = wordCategories.ContainsKey(answer) ? wordCategories[answer] : "Unknown";
+                HintTitle.Text = "HINT 1 — CATEGORY";
+                HintTitle.TextColor = Color.FromArgb("#5D367E");
+                HintText.Text = $"Category: {category}\nFirst letter: {char.ToUpper(answer[0])}";
+                HintText.TextColor = Color.FromArgb("#B78BFF");
+                GameMessage.Text = "Force intel unlocked. Hint 1 used.";
+                GameMessage.TextColor = Color.FromArgb("#8A4DFF");
+            }
+            else if (hintsUsed == 2)
+            {
+                int len = answer.Length;
+                string vowels = answer.Where(c => "aeiou".Contains(c))
+                    .Select(c => char.ToUpper(c).ToString())
+                    .Distinct()
+                    .Aggregate((a, b) => $"{a}, {b}");
+                HintTitle.Text = "HINT 2 — DETAILS";
+                HintTitle.TextColor = Color.FromArgb("#8A4DFF");
+                HintText.Text = $"{len} letters long\nContains vowels: {vowels}";
+                HintText.TextColor = Color.FromArgb("#B78BFF");
+                GameMessage.Text = "Deeper into the Force. Hint 2 used.";
+                GameMessage.TextColor = Color.FromArgb("#8A4DFF");
+            }
+            else
+            {
+                char lastChar = answer.Last();
+                string revealed = answer.Select(c =>
+                {
+                    if (c == lastChar) return "_";
+                    if (guessed.IndexOf(c) >= 0) return c.ToString();
+                    return char.ToUpper(c).ToString();
+                }).Aggregate((a, b) => $"{a} {b}");
+
+                HintTitle.Text = "HINT 3 — FULL SCAN";
+                HintTitle.TextColor = Color.FromArgb("#FFD34D");
+                HintText.Text = $"Almost decoded:\n{revealed}\n(Only {char.ToUpper(lastChar)} hidden)";
+                HintText.TextColor = Color.FromArgb("#FFD34D");
+                GameMessage.Text = "Maximum Force intel unlocked. The end is near.";
+                GameMessage.TextColor = Color.FromArgb("#FFD34D");
+            }
+
+            if (remaining == 0)
+            {
+                HintButton.IsEnabled = false;
+            }
+        }
+
         private void UpdateVaderState()
         {
             int revealed = answer.Count(c => guessed.IndexOf(c) >= 0);
@@ -94,11 +188,11 @@ namespace Hangman
 
             if (revealed == answer.Length && answer.Length > 0)
             {
-                VaderImage.Source = "vaderlogo.png";
+                VaderImage.Source = "defeat.png";
             }
             else if (mistakes >= maxWrong)
             {
-                VaderImage.Source = "defeat.png";
+                VaderImage.Source = "injured.png";
             }
             else if (mistakes >= 3)
             {
@@ -206,6 +300,11 @@ namespace Hangman
         private void ResetButton_Clicked(object sender, EventArgs e)
         {
             ResetGame();
+        }
+
+        private void HintButton_Clicked(object sender, EventArgs e)
+        {
+            GiveHint();
         }
     }
 }
