@@ -394,6 +394,15 @@
                         <VerticalStackLayout
                         Spacing="10">
 
+                            <!-- CATEGORY SELECT -->
+                            <Picker
+                            x:Name="CategoryPicker"
+                            Title="Select a category..."
+                            SelectedIndexChanged="CategoryPicker_SelectedIndexChanged"
+                            TextColor="#FFFFFF"
+                            TitleColor="#696E77"
+                            BackgroundColor="#171A20" />
+
                             <Grid ColumnDefinitions="*,Auto">
 
                                 <Label

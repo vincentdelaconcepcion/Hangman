@@ -4,35 +4,94 @@ namespace Hangman
 {
     public partial class MainPage : ContentPage
     {
-        private readonly List<string> words = new List<string>()
+        private class WordEntry
         {
-            "python", "javascript", "maui", "csharp", "mongodb",
-            "sql", "xaml", "word", "excel", "powerpoint",
-            "code", "hotreload", "snippets", "android", "vader"
+            public string Word { get; }
+            public string Category { get; }
+            public string Databank { get; }
+
+            public WordEntry(string word, string category, string databank)
+            {
+                Word = word;
+                Category = category;
+                Databank = databank;
+            }
+        }
+
+        private readonly Dictionary<string, List<WordEntry>> wordBank = new()
+        {
+            ["Sith Lords"] = new()
+            {
+                new WordEntry("vader", "Sith Lords", "The Dark Lord of the Sith and heir to the Empire"),
+                new WordEntry("palpatine", "Sith Lords", "The Emperor who secretly ruled the galaxy"),
+                new WordEntry("sidious", "Sith Lords", "Darth Sidious, the ultimate Sith master"),
+                new WordEntry("maul", "Sith Lords", "Zabrak Sith wielding a double-bladed lightsaber"),
+                new WordEntry("tyrannus", "Sith Lords", "Darth Tyrannus, once known as Count Dooku"),
+                new WordEntry("dooku", "Sith Lords", "A fallen Jedi Master and Separatist leader"),
+                new WordEntry("revan", "Sith Lords", "A legendary knight who fell to the dark side"),
+                new WordEntry("bane", "Sith Lords", "Founder of the Rule of Two"),
+                new WordEntry("kylo", "Sith Lords", "Kylo Ren, master of the Knights of Ren"),
+                new WordEntry("malgus", "Sith Lords", "A brute Sith Lord of the Old Republic era")
+            },
+            ["Jedi Masters"] = new()
+            {
+                new WordEntry("yoda", "Jedi Masters", "Grand Master of the Jedi Order, wisest of them all"),
+                new WordEntry("obiwan", "Jedi Masters", "Obi-Wan Kenobi, the Negotiator"),
+                new WordEntry("kenobi", "Jedi Masters", "Obi-Wan Kenobi, general of the Republic army"),
+                new WordEntry("luke", "Jedi Masters", "Luke Skywalker, hero of the Rebellion"),
+                new WordEntry("anakin", "Jedi Masters", "The Chosen One, father of the Skywalkers"),
+                new WordEntry("quigon", "Jedi Masters", "Qui-Gon Jinn, who discovered Anakin on Tatooine"),
+                new WordEntry("windu", "Jedi Masters", "Mace Windu, master of the Vaapad form"),
+                new WordEntry("ahsoka", "Jedi Masters", "Anakin's Padawan who became a Rebel commander"),
+                new WordEntry("rey", "Jedi Masters", "A scavenger from Jakku who became a Jedi"),
+                new WordEntry("jinn", "Jedi Masters", "Qui-Gon Jinn, a maverick Jedi Master")
+            },
+            ["Ships & Vehicles"] = new()
+            {
+                new WordEntry("falcon", "Ships & Vehicles", "The Millennium Falcon, a smuggling legend"),
+                new WordEntry("xwing", "Ships & Vehicles", "Rebel starfighter that destroyed the Death Star"),
+                new WordEntry("tiefighter", "Ships & Vehicles", "The Empire's iconic starfighter"),
+                new WordEntry("destroyer", "Ships & Vehicles", "Imperial Star Destroyer, symbol of the fleet"),
+                new WordEntry("bomber", "Ships & Vehicles", "Rebel Y-wing bomber used in raids"),
+                new WordEntry("interceptor", "Ships & Vehicles", "TIE Interceptor, faster than the standard TIE"),
+                new WordEntry("speeder", "Ships & Vehicles", "Landspeeder cruised across the Tatooine dunes"),
+                new WordEntry("shuttle", "Ships & Vehicles", "Lambda-class shuttle used by the Empire"),
+                new WordEntry("cruiser", "Ships & Vehicles", "Capital ship that leads a battle group"),
+                new WordEntry("deathstar", "Ships & Vehicles", "The Empire's planet-destroying superweapon")
+            },
+            ["Planets & Aliens"] = new()
+            {
+                new WordEntry("tatooine", "Planets & Aliens", "Desert planet and home of Luke Skywalker"),
+                new WordEntry("coruscant", "Planets & Aliens", "The city-planet capital of the Republic"),
+                new WordEntry("naboo", "Planets & Aliens", "Homeworld of Padmé Amidala and the Gungans"),
+                new WordEntry("hoth", "Planets & Aliens", "Ice planet harboring a secret Rebel base"),
+                new WordEntry("endor", "Planets & Aliens", "Forested moon inhabited by the Ewoks"),
+                new WordEntry("dagobah", "Planets & Aliens", "Swamp planet where Yoda hid in exile"),
+                new WordEntry("mustafar", "Planets & Aliens", "Volcanic world where Anakin was defeated"),
+                new WordEntry("jakku", "Planets & Aliens", "Desert planet where scavenger Rey made her home"),
+                new WordEntry("ewok", "Planets & Aliens", "Furry creatures of the Endor forest"),
+                new WordEntry("wookiee", "Planets & Aliens", "Chewbacca's tall and loyal furry species")
+            },
+            ["Droids & Weapons"] = new()
+            {
+                new WordEntry("lightsaber", "Droids & Weapons", "The elegant weapon of a Jedi Knight"),
+                new WordEntry("astromech", "Droids & Weapons", "A mechanic droid that keeps starships flying"),
+                new WordEntry("r2d2", "Droids & Weapons", "The heroic astromech droid R2-D2"),
+                new WordEntry("c3po", "Droids & Weapons", "A protocol droid fluent in six million languages"),
+                new WordEntry("bb8", "Droids & Weapons", "The spherical astromech droid of Rey"),
+                new WordEntry("blaster", "Droids & Weapons", "Standard range weapon of stormtroopers"),
+                new WordEntry("kyber", "Droids & Weapons", "Crystal at the heart of every lightsaber"),
+                new WordEntry("cortosis", "Droids & Weapons", "Rare metal that can resist a lightsaber"),
+                new WordEntry("probe", "Droids & Weapons", "Imperial spy droid that uncovered the Hoth base"),
+                new WordEntry("droid", "Droids & Weapons", "An autonomous robot used across the galaxy")
+            }
         };
 
-        private readonly Dictionary<string, string> wordCategories = new()
-        {
-            ["python"] = "Programming Language",
-            ["javascript"] = "Programming Language",
-            ["maui"] = "UI Framework",
-            ["csharp"] = "Programming Language",
-            ["mongodb"] = "Database",
-            ["sql"] = "Query Language",
-            ["xaml"] = "UI Markup",
-            ["word"] = "Office App",
-            ["excel"] = "Office App",
-            ["powerpoint"] = "Office App",
-            ["code"] = "General Term",
-            ["hotreload"] = "Developer Tool",
-            ["snippets"] = "Developer Tool",
-            ["android"] = "Operating System",
-            ["vader"] = "Sith Lord"
-        };
-
+        private readonly List<WordEntry> allWords = new List<WordEntry>();
         private readonly List<Button> letterButtons = new List<Button>();
 
         private string answer = "";
+        private WordEntry? currentEntry;
         private readonly List<char> guessed = new List<char>();
         private int mistakes = 0;
         private int maxWrong = 6;
@@ -42,8 +101,13 @@ namespace Hangman
         public MainPage()
         {
             InitializeComponent();
+            foreach (var list in wordBank.Values)
+            {
+                allWords.AddRange(list);
+            }
             CollectLetterButtons();
-            ResetGame();
+            CategoryPicker.ItemsSource = wordBank.Keys.ToList();
+            CategoryPicker.SelectedIndex = 0;
         }
 
         private void CollectLetterButtons()
@@ -83,7 +147,18 @@ namespace Hangman
 
         private string PickWord()
         {
-            return words[new Random().Next(0, words.Count)];
+            string category = CategoryPicker.SelectedIndex >= 0
+                ? (string)CategoryPicker.SelectedItem
+                : wordBank.Keys.First();
+
+            var pool = wordBank.ContainsKey(category) ? wordBank[category] : allWords;
+            currentEntry = pool[new Random().Next(0, pool.Count)];
+            return currentEntry.Word;
+        }
+
+        private void CategoryPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ResetGame();
         }
 
         private void UpdateWordDisplay()
@@ -135,43 +210,33 @@ namespace Hangman
 
             if (hintsUsed == 1)
             {
-                string category = wordCategories.ContainsKey(answer) ? wordCategories[answer] : "Unknown";
-                HintTitle.Text = "HINT 1 — CATEGORY";
+                string databank = currentEntry?.Databank ?? "The Dark Side holds the secret.";
+                HintTitle.Text = "FIRST WHISPER";
                 HintTitle.TextColor = Color.FromArgb("#5D367E");
-                HintText.Text = $"Category: {category}\nFirst letter: {char.ToUpper(answer[0])}";
+                HintText.Text = $"It is a {currentEntry?.Category}.\nAsk: {databank}?";
                 HintText.TextColor = Color.FromArgb("#B78BFF");
-                GameMessage.Text = "Force intel unlocked. Hint 1 used.";
+                GameMessage.Text = "The Force whispers a faint clue...";
                 GameMessage.TextColor = Color.FromArgb("#8A4DFF");
             }
             else if (hintsUsed == 2)
             {
-                int len = answer.Length;
-                string vowels = answer.Where(c => "aeiou".Contains(c))
-                    .Select(c => char.ToUpper(c).ToString())
-                    .Distinct()
-                    .Aggregate((a, b) => $"{a}, {b}");
-                HintTitle.Text = "HINT 2 — DETAILS";
+                string category = currentEntry?.Category ?? "Unknown";
+                string databank = currentEntry?.Databank ?? "The Dark Side holds the secret.";
+                HintTitle.Text = "DEEPER INTEL";
                 HintTitle.TextColor = Color.FromArgb("#8A4DFF");
-                HintText.Text = $"{len} letters long\nContains vowels: {vowels}";
+                HintText.Text = $"This belongs to the realm of {category}.\n{databank}.";
                 HintText.TextColor = Color.FromArgb("#B78BFF");
-                GameMessage.Text = "Deeper into the Force. Hint 2 used.";
+                GameMessage.Text = "The databank grows clearer...";
                 GameMessage.TextColor = Color.FromArgb("#8A4DFF");
             }
             else
             {
-                char lastChar = answer.Last();
-                string revealed = answer.Select(c =>
-                {
-                    if (c == lastChar) return "_";
-                    if (guessed.IndexOf(c) >= 0) return c.ToString();
-                    return char.ToUpper(c).ToString();
-                }).Aggregate((a, b) => $"{a} {b}");
-
-                HintTitle.Text = "HINT 3 — FULL SCAN";
+                HintTitle.Text = "FULL DOSSIER";
                 HintTitle.TextColor = Color.FromArgb("#FFD34D");
-                HintText.Text = $"Almost decoded:\n{revealed}\n(Only {char.ToUpper(lastChar)} hidden)";
+                HintText.Text =
+                    $"The scroll is unsealed.\n\n{currentEntry?.Databank}.";
                 HintText.TextColor = Color.FromArgb("#FFD34D");
-                GameMessage.Text = "Maximum Force intel unlocked. The end is near.";
+                GameMessage.Text = "The full dossier is open. Only you can break the code.";
                 GameMessage.TextColor = Color.FromArgb("#FFD34D");
             }
 
