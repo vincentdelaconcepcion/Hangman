@@ -24,9 +24,9 @@ namespace Hangman
             {
                 new WordEntry("vader", "Sith Lords", "The Dark Lord of the Sith and heir to the Empire"),
                 new WordEntry("palpatine", "Sith Lords", "The Emperor who secretly ruled the galaxy"),
-                new WordEntry("sidious", "Sith Lords", "Darth Sidious, the ultimate Sith master"),
+                new WordEntry("sidious", "Sith Lords", "Darth _______, the ultimate Sith master"),
                 new WordEntry("maul", "Sith Lords", "Zabrak Sith wielding a double-bladed lightsaber"),
-                new WordEntry("tyrannus", "Sith Lords", "Darth Tyrannus, once known as Count Dooku"),
+                new WordEntry("tyrannus", "Sith Lords", "once known as Count Dooku"),
                 new WordEntry("dooku", "Sith Lords", "A fallen Jedi Master and Separatist leader"),
                 new WordEntry("revan", "Sith Lords", "A legendary knight who fell to the dark side"),
                 new WordEntry("bane", "Sith Lords", "Founder of the Rule of Two"),
@@ -168,7 +168,7 @@ namespace Hangman
                 .ToArray();
 
             WordLabel.Text = string.Join(" ", temp);
-            WordLabel.CharacterSpacing = 8;
+            WordLabel.CharacterSpacing = 4;
 
             int correctCount = answer.Count(c => guessed.IndexOf(c) >= 0);
             double progress = answer.Length == 0 ? 0 : (double)correctCount / answer.Length;
@@ -231,13 +231,13 @@ namespace Hangman
             }
             else
             {
-                HintTitle.Text = "FULL DOSSIER";
+                HintTitle.Text = "The FORCE HAS AWOKEN";
                 HintTitle.TextColor = Color.FromArgb("#FFD34D");
                 HintText.Text =
                     $"The scroll is unsealed.\n\n{currentEntry?.Databank}.";
                 HintText.TextColor = Color.FromArgb("#FFD34D");
-                GameMessage.Text = "The full dossier is open. Only you can break the code.";
-                GameMessage.TextColor = Color.FromArgb("#FFD34D");
+                GameMessage.Text = "The Force has awoken and is now open. May the force be with you.";
+                GameMessage.TextColor = Color.FromArgb("#FFD34D");  
             }
 
             if (remaining == 0)
@@ -325,11 +325,11 @@ namespace Hangman
             {
                 GameMessage.Text = $"You lost! The word was \"{answer.ToUpper()}\".";
                 GameMessage.TextColor = Color.FromArgb("#FF3A42");
-                StatusText.Text = "DEFEATED";
+                StatusText.Text = "YOU GOT KILLED";
                 StatusText.TextColor = Color.FromArgb("#FF3A42");
                 StatusBadge.BackgroundColor = Color.FromArgb("#211015");
                 StatusBadge.Stroke = Color.FromArgb("#57171B");
-                VaderStatus.Text = "VADER HAS WON";
+                VaderStatus.Text = "DARTH VADER HAS WON";
                 UpdateVaderState();
                 DisableLetters();
                 return true;

@@ -43,7 +43,7 @@
                     Value="#F4F4F4" />
 
                 <Setter Property="FontSize"
-                    Value="16" />
+                    Value="14" />
 
                 <Setter Property="FontAttributes"
                     Value="Bold" />
@@ -52,10 +52,10 @@
                     Value="8" />
 
                 <Setter Property="HeightRequest"
-                    Value="48" />
+                    Value="44" />
 
                 <Setter Property="WidthRequest"
-                    Value="48" />
+                    Value="44" />
 
                 <Setter Property="BorderColor"
                     Value="#30343D" />
@@ -123,7 +123,7 @@
                     <Label
                     Text="DARTH VADER HANGMAN GAME"
                     TextColor="#FFFFFF"
-                    FontSize="19"
+                    FontSize="16"
                     FontAttributes="Bold"
                     CharacterSpacing="1" />
 
@@ -196,7 +196,7 @@
 
                         <Grid
                         RowDefinitions="Auto,*,Auto"
-                        HeightRequest="280">
+                        HeightRequest="230">
 
 
                             <!-- Vader status -->
@@ -232,13 +232,13 @@
                                 Stroke="#57171B"
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 6"
-                                Padding="8,4">
+                                Padding="8,2">
 
                                     <Label
                                     x:Name="StatusText"
                                     Text="READY"
                                     TextColor="#FF3A42"
-                                    FontSize="9"
+                                    FontSize="12"
                                     FontAttributes="Bold" />
 
                                 </Border>
@@ -257,13 +257,13 @@
                                 <!-- Purple Force glow -->
 
                                 <Ellipse
-                                WidthRequest="210"
+                                WidthRequest="180"
                                 HeightRequest="80"
-                                Fill="#24113D"
-                                Opacity="0.65"
+                                Fill="Red"
+                                Opacity="0.35"
                                 HorizontalOptions="Center"
                                 VerticalOptions="End"
-                                Margin="0,0,0,10" />
+                                Margin="0,0,0,0" />
 
                                 <Image
                                 x:Name="VaderImage"
@@ -271,8 +271,8 @@
                                 Aspect="AspectFit"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
-                                WidthRequest="250"
-                                HeightRequest="215" />
+                                WidthRequest="220"
+                                HeightRequest="175" />
 
                             </Grid>
 
@@ -325,18 +325,18 @@
                     Stroke="#292D35"
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 16"
-                    Padding="18,15"
+                    Padding="10,12"
                     Margin="0,5,0,0">
 
                         <VerticalStackLayout
-                        Spacing="10">
+                        Spacing="8">
 
                             <Grid ColumnDefinitions="*,Auto">
 
                                 <Label
                                 Text="FORCE INTEL"
                                 TextColor="#696E77"
-                                FontSize="9"
+                                FontSize="8"
                                 FontAttributes="Bold"
                                 CharacterSpacing="1.5" />
 
@@ -345,7 +345,7 @@
                                 Grid.Column="1"
                                 Text="0 / 3"
                                 TextColor="#4DFF8A"
-                                FontSize="10"
+                                FontSize="9"
                                 FontAttributes="Bold" />
 
                             </Grid>
@@ -354,16 +354,17 @@
                             x:Name="HintTitle"
                             Text="NO HINTS USED"
                             TextColor="#5D367E"
-                            FontSize="13"
+                            FontSize="11"
                             FontAttributes="Bold"
                             HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap"
                             Margin="0,3,0,3" />
 
                             <Label
                             x:Name="HintText"
                             Text="Use a hint to reveal intel about the word."
                             TextColor="#696E77"
-                            FontSize="11"
+                            FontSize="10"
                             HorizontalTextAlignment="Center"
                             LineBreakMode="WordWrap" />
 
@@ -373,7 +374,7 @@
                             ProgressColor="#5D367E"
                             BackgroundColor="#24262D"
                             HeightRequest="5" />
-
+                            
                         </VerticalStackLayout>
 
                     </Border>
@@ -426,10 +427,11 @@
                             x:Name="WordLabel"
                             Text="_ _ _ _"
                             TextColor="#FFFFFF"
-                            FontSize="27"
+                            FontSize="22"
                             FontAttributes="Bold"
-                            CharacterSpacing="8"
+                            CharacterSpacing="4"
                             HorizontalTextAlignment="Center"
+                            LineBreakMode="NoWrap"
                             Margin="0,3,0,3" />
 
                             <ProgressBar
@@ -478,13 +480,13 @@
                     Padding="12,14">
 
                         <VerticalStackLayout
-                        Spacing="8">
+                        Spacing="12">
 
                             <!-- ROW 1 -->
 
                             <HorizontalStackLayout
                             HorizontalOptions="Center"
-                            Spacing="7">
+                            Spacing="6">
 
                                 <Button Text="A"
                                     x:Name="BtnA"
@@ -518,7 +520,7 @@
 
                             <HorizontalStackLayout
                             HorizontalOptions="Center"
-                            Spacing="7">
+                            Spacing="6">
 
                                 <Button Text="F"
                                     x:Name="BtnF"
@@ -552,7 +554,7 @@
 
                             <HorizontalStackLayout
                             HorizontalOptions="Center"
-                            Spacing="7">
+                            Spacing="6">
 
                                 <Button Text="K"
                                     x:Name="BtnK"
@@ -586,7 +588,7 @@
 
                             <HorizontalStackLayout
                             HorizontalOptions="Center"
-                            Spacing="7">
+                            Spacing="6">
 
                                 <Button Text="P"
                                     x:Name="BtnP"
@@ -620,7 +622,7 @@
 
                             <HorizontalStackLayout
                             HorizontalOptions="Center"
-                            Spacing="7">
+                            Spacing="6">
 
                                 <Button Text="U"
                                     x:Name="BtnU"
@@ -727,7 +729,7 @@
                 Grid.Column="1"
                 Text="FORCE LEVEL: MAX"
                 TextColor="#5D367E"
-                FontSize="8"
+                FontSize="8"    
                 FontAttributes="Bold" />
 
             </Grid>
