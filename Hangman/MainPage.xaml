@@ -232,7 +232,9 @@
                                 Stroke="#57171B"
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 6"
-                                Padding="8,2">
+                                Padding="8,4"
+                                VerticalOptions="Center"
+                                HeightRequest="-1">
 
                                     <Label
                                     x:Name="StatusText"
@@ -362,7 +364,7 @@
 
                             <Label
                             x:Name="HintText"
-                            Text="Use a hint to reveal intel about the word."
+                            Text="Tap a hint to feel the temperature rise."
                             TextColor="#696E77"
                             FontSize="10"
                             HorizontalTextAlignment="Center"
@@ -374,9 +376,39 @@
                             ProgressColor="#5D367E"
                             BackgroundColor="#24262D"
                             HeightRequest="5" />
-                            
-                        </VerticalStackLayout>
 
+                            <Button
+                                x:Name="HintButton"
+                                Text="FORCE HINT"
+                                Clicked="HintButton_Clicked"
+                                BackgroundColor="#1A1230"
+                                TextColor="#8A4DFF"
+                                BorderColor="#3A176E"
+                                BorderWidth="1"
+                                CornerRadius="9"
+                                HeightRequest="48"
+                                FontSize="11"
+                                FontAttributes="Bold" />
+
+                            <Grid
+                                Margin="0,0,0,10">
+
+                                <Button
+                                x:Name="ResetButton"
+                                Text="RESET GAME"
+                                Clicked="ResetButton_Clicked"
+                                BackgroundColor="#171A20"
+                                TextColor="#FFFFFF"
+                                BorderColor="#383C45"
+                                BorderWidth="1"
+                                CornerRadius="9"
+                                HeightRequest="48"
+                                FontSize="11"
+                                FontAttributes="Bold" />
+
+                            </Grid>
+                        </VerticalStackLayout>
+                        
                     </Border>
 
                 </Grid>
@@ -673,38 +705,7 @@
                     <!-- RESET -->
                     <!-- ========================================= -->
 
-                    <Grid
-                    ColumnDefinitions="*,8,*"
-                    Margin="40,0,40,10">
-
-                        <Button
-                        x:Name="HintButton"
-                        Text="FORCE HINT"
-                        Clicked="HintButton_Clicked"
-                        BackgroundColor="#1A1230"
-                        TextColor="#8A4DFF"
-                        BorderColor="#3A176E"
-                        BorderWidth="1"
-                        CornerRadius="9"
-                        HeightRequest="48"
-                        FontSize="11"
-                        FontAttributes="Bold" />
-
-                        <Button
-                        x:Name="ResetButton"
-                        Grid.Column="2"
-                        Text="RESET GAME"
-                        Clicked="ResetButton_Clicked"
-                        BackgroundColor="#171A20"
-                        TextColor="#FFFFFF"
-                        BorderColor="#383C45"
-                        BorderWidth="1"
-                        CornerRadius="9"
-                        HeightRequest="48"
-                        FontSize="11"
-                        FontAttributes="Bold" />
-
-                    </Grid>
+                    
 
                 </VerticalStackLayout>
 

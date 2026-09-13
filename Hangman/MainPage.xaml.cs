@@ -189,9 +189,10 @@ namespace Hangman
             hintsUsed = 0;
             HintCountText.Text = "0 / 3";
             HintProgress.Progress = 0;
+            HintProgress.ProgressColor = Color.FromArgb("#5D367E");
             HintTitle.Text = "NO HINTS USED";
             HintTitle.TextColor = Color.FromArgb("#5D367E");
-            HintText.Text = "Use a hint to reveal intel about the word.";
+            HintText.Text = "Tap a hint to feel the temperature rise.";
             HintText.TextColor = Color.FromArgb("#696E77");
             HintButton.IsEnabled = true;
         }
@@ -208,36 +209,40 @@ namespace Hangman
             HintCountText.Text = $"{hintsUsed} / 3";
             HintProgress.Progress = (double)hintsUsed / maxHints;
 
+            string category = currentEntry?.Category ?? "Unknown";
+            string databank = currentEntry?.Databank ?? "The Dark Side holds the secret.";
+            int len = answer.Length;
+            char first = char.ToUpper(answer[0]);
+
             if (hintsUsed == 1)
             {
-                string databank = currentEntry?.Databank ?? "The Dark Side holds the secret.";
-                HintTitle.Text = "FIRST WHISPER";
+                HintTitle.Text = "A DISTURBANCE";
                 HintTitle.TextColor = Color.FromArgb("#5D367E");
-                HintText.Text = $"It is a {currentEntry?.Category}.\nAsk: {databank}?";
+                HintText.Text = $"Category: {category}.\nA {databank} ties to it.";
                 HintText.TextColor = Color.FromArgb("#B78BFF");
-                GameMessage.Text = "The Force whispers a faint clue...";
+                HintProgress.ProgressColor = Color.FromArgb("#5D367E");
+                GameMessage.Text = "You sense a disturbance in the Force…";
                 GameMessage.TextColor = Color.FromArgb("#8A4DFF");
             }
             else if (hintsUsed == 2)
             {
-                string category = currentEntry?.Category ?? "Unknown";
-                string databank = currentEntry?.Databank ?? "The Dark Side holds the secret.";
-                HintTitle.Text = "DEEPER INTEL";
-                HintTitle.TextColor = Color.FromArgb("#8A4DFF");
-                HintText.Text = $"This belongs to the realm of {category}.\n{databank}.";
-                HintText.TextColor = Color.FromArgb("#B78BFF");
-                GameMessage.Text = "The databank grows clearer...";
-                GameMessage.TextColor = Color.FromArgb("#8A4DFF");
+                HintTitle.Text = "THE FORCE BURNS";
+                HintTitle.TextColor = Color.FromArgb("#FF9F43");
+                HintText.Text = $"Still the realm of {category}.\nIn this universe, a {databank} matters greatly.";
+                HintText.TextColor = Color.FromArgb("#FFD8A8");
+                HintProgress.ProgressColor = Color.FromArgb("#FF9F43");
+                GameMessage.Text = "The Dark Side burns brighter now…";
+                GameMessage.TextColor = Color.FromArgb("#FF9F43");
             }
             else
             {
-                HintTitle.Text = "The FORCE HAS AWOKEN";
-                HintTitle.TextColor = Color.FromArgb("#FFD34D");
-                HintText.Text =
-                    $"The scroll is unsealed.\n\n{currentEntry?.Databank}.";
-                HintText.TextColor = Color.FromArgb("#FFD34D");
-                GameMessage.Text = "The Force has awoken and is now open. May the force be with you.";
-                GameMessage.TextColor = Color.FromArgb("#FFD34D");  
+                HintTitle.Text = "THE DARK LORD SPEAKS";
+                HintTitle.TextColor = Color.FromArgb("#FF3A42");
+                HintText.Text = $"Starts with \"{first}\" — {len} letters.\nA {databank}.";
+                HintText.TextColor = Color.FromArgb("#FF6B6B");
+                HintProgress.ProgressColor = Color.FromArgb("#FF3A42");
+                GameMessage.Text = "The Dark Lord has spoken — choose wisely!";
+                GameMessage.TextColor = Color.FromArgb("#FF3A42");
             }
 
             if (remaining == 0)
@@ -371,5 +376,7 @@ namespace Hangman
         {
             GiveHint();
         }
+
+       
     }
 }
